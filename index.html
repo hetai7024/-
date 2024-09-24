@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>裝置類型檢測與重定向</title>
+</head>
+<body>
+    <h1>歡迎光臨！</h1>
+    <p>正在檢測您的裝置類型，請稍候...</p>
+
+    <script>
+        // 檢測裝置類型的函數
+        function detectDevice() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            // 判斷是否為安卓裝置
+            if (/android/i.test(userAgent)) {
+                return "Android";
+            }
+
+            // 判斷是否為iOS裝置
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return "iOS";
+            }
+
+            return "Other";
+        }
+
+        // 根據裝置類型進行重定向
+        const deviceType = detectDevice();
+
+        // 發送裝置類型到伺服器
+        fetch('http://localhost:3000/log-device', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ deviceType })
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+
+        // 執行重定向
+        if (deviceType === "Android") {
+            window.location.href = "https://hetai7024.github.io/Android/"; // 替換為您的安卓網站
+        } else if (deviceType === "iOS") {
+            window.location.href = "https://hetai7024.github.io/IOS/"; // 替換為您的iOS網站
+        } else {
+            window.location.href = "https://www.youtube.com/"; // 其他裝置的連結
+        }
+    </script>
+</body>
+</html>
